@@ -27,12 +27,12 @@ jobs:
         run: |
           mkdir -p dist
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} \
-          go build -o dist/voipbin-mcp-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/voipbin-mcp
+          go build -o dist/test-mcp-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/test-mcp
 
       - name: Archive
         run: |
           cd dist
-          zip voipbin-mcp-${{ matrix.goos }}-${{ matrix.goarch }}.zip voipbin-mcp-${{ matrix.goos }}-${{ matrix.goarch }}
+          zip test-mcp-${{ matrix.goos }}-${{ matrix.goarch }}.zip test-mcp-${{ matrix.goos }}-${{ matrix.goarch }}
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
