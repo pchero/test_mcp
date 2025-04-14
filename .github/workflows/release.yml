@@ -1,0 +1,42 @@
+name: Release MCP Server
+
+on:
+  push:
+    tags:
+      - 'v*'  # 태그 푸시 예: v0.1.0
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        goos: [linux, darwin, windows]
+        goarch: [amd64, arm64]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.23
+
+      - name: Build binary
+        run: |
+          mkdir -p dist
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} \
+          go build -o dist/voipbin-mcp-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/voipbin-mcp
+
+      - name: Archive
+        run: |
+          cd dist
+          zip voipbin-mcp-${{ matrix.goos }}-${{ matrix.goarch }}.zip voipbin-mcp-${{ matrix.goos }}-${{ matrix.goarch }}
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
